@@ -47,7 +47,7 @@ class Contact1:                                 #второй класс, что
         if data[2] != 'No info':
             if data[0] != 'No info' or data[1] != 'No info':
                 for code in cody:
-                    if data[2] != self.kniga[2][code]:
+                    if data[2] != self.kniga[3][code]:
                         cody.remove(code)
             else:
                 for i in range(len(self.kniga[3])):
