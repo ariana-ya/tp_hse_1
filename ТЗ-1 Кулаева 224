@@ -1,0 +1,192 @@
+class Contact:
+    def __init__(self, name, phone, mail):
+        self.name = name
+        self.phone = phone
+        self.mail = mail
+
+
+class Contact1:                                 #второй класс, чтобы не грузить Contact1
+    def __init__(self):
+        self.kniga = [[], [], [], [], [], []]   #шестой массив, чтобы легче было реализовать вывод по коду контактов
+
+
+    def __add__(self, contact):
+        data = contact.name.split(' ')
+        while len(data) < 3:
+            data.append('No info')
+        self.kniga[0].append(len(self.kniga[0]) + 1)
+        self.kniga[1].append(data[0])
+        self.kniga[2].append(data[1])
+        self.kniga[3].append(data[2])
+        if contact.phone == 'No info':
+            self.kniga[4].append('No info')
+        else:
+            self.kniga[4].append(contact.phone)
+        if contact.mail == 'No info':
+            self.kniga[5].append('No info')
+        else:
+            self.kniga[5].append(contact.mail)
+
+
+    def poisk(self, data):
+        cody = []
+        if data[0] != 'No info':
+            for i in range(len(self.kniga[1])):
+                if data[0] == self.kniga[1][i]:
+                    cody.append(self.kniga[0][i] - 1)
+        if data[1] != 'No info':
+            if data[0] != 'No info':
+                for code in cody:
+                    if data[1] != self.kniga[2][code]:
+                        cody.remove(code)
+            else:
+                for i in range(len(self.kniga[2])):
+                    if data[1] == self.kniga[2][i]:
+                        cody.append(self.kniga[0][i] - 1)
+
+        if data[2] != 'No info':
+            if data[0] != 'No info' or data[1] != 'No info':
+                for code in cody:
+                    if data[2] != self.kniga[2][code]:
+                        cody.remove(code)
+            else:
+                for i in range(len(self.kniga[3])):
+                    if data[2] == self.kniga[3][i]:
+                        cody.append(self.kniga[0][i] - 1)
+
+        if len(cody) == 0:
+            print('No information found')
+        else:
+            for code in cody:
+                print(self.PrisvoitCode(code))
+
+    def ph_poisk(self, phone):
+        if self.kniga[4].__contains__(phone):
+            code = self.kniga[4].index(phone)
+            print(self.PrisvoitCode(code))
+        else:
+            print('No information found')
+
+    def ma_poisk(self, mail):
+        if self.kniga[5].__contains__(mail):
+            code = self.kniga[5].index(mail)
+            print(self.PrisvoitCode(code))
+        else:
+            print('No information found')
+
+    def PrisvoitCode(self, code):
+        n = 'Code - ' + str(self.kniga[0][code]) + '\n'                   #код контакта
+        if self.kniga[1][code] != 'No info':
+            n += 'Full name - ' + self.kniga[1][code]                     #имя
+        if self.kniga[2][code] != 'No info':
+            n += ' ' + self.kniga[2][code]
+        if self.kniga[3][code] != 'No info':
+            n += ' ' + self.kniga[3][code]
+        if self.kniga[4][code] != 'No info':
+            n += '\n' + 'Phone: ' + self.kniga[4][code]
+        else:
+            n += '\n' + 'Phone: ' + 'No info'
+        if self.kniga[5][code] != 'No info':
+            n += '\n' + 'Mail: ' + self.kniga[5][code] + '\n'
+        else:
+            n += '\n' + 'Mail: ' + 'No info' + '\n'
+        return n
+
+
+    def no_ph_ma(self, a):
+        if a == 1:
+            for i in range(len(self.kniga[4])):
+                if self.kniga[4][i] == 'No info':
+                    print(self.PrisvoitCode(i))
+            return
+        if a == 2:
+            for i in range(len(self.kniga[5])):
+                if self.kniga[5][i] == 'No info':
+                    print(self.PrisvoitCode(i))
+            return
+        if a == 3:
+            for i in range(len(self.kniga[4])):
+                if self.kniga[4][i] == 'No info' and self.kniga[5][i] == 'No info':
+                    print(self.PrisvoitCode(i))
+            return
+
+    def edit(self, code, contact):
+        code -= 1
+        data = contact.name.split(' ')
+        while len(data) < 3:
+            data.append('No info')
+        self.kniga[1][code] = data[0]
+        self.kniga[2][code] = data[1]
+        self.kniga[3][code] = data[2]
+        if len(contact.phone) > 0:
+            self.kniga[4][code] = contact.phone
+        else:
+            self.kniga[4][code] = 'No info'
+        if len(contact.mail) > 0:
+            self.kniga[5][code] = contact.mail
+        else:
+            self.kniga[5][code] = 'No info'
+
+
+def vyvod():
+    print('Choose action: ')
+    print('1 - Phone given', '2 - Mail given', '3 - Full name given',
+          '4 - No phone or mail given', '5 - Edit', sep="\n")
+
+
+print('Enter file name')
+fileName = input()
+file = open(fileName, encoding='utf-8')
+base = Contact1()
+for stroka in file:
+    arr = stroka.split(",")
+    contact = Contact(arr[0],arr[1].replace(' ',''),arr[2].replace(' ','').replace('\n',''))
+    base.__add__(contact)
+vyvod()
+chtoto = int(input())
+while chtoto != "азазелло":
+    if chtoto == 1:
+        print("Enter phone")
+        phone = input()
+        base.ph_poisk(phone)
+    elif chtoto == 2:
+        print("Enter mail")
+        mail = input()
+        base.ma_poisk(mail)
+    elif chtoto == 3:
+        data = []
+        print("Enter surname (If not given - click Enter button)")
+        f = input()
+        if f == 'No info':
+            data.append('No info')
+        else:
+            data.append(f)
+        print("Enter name (If not given - click Enter button)")
+        i = input()
+        if i == 'No info':
+            data.append('No info')
+        else:
+            data.append(i)
+        print("Enter middle name (If not given - click Enter button)")
+        o = input()
+        if o == 'No info':
+            data.append('No info')
+        else:
+            data.append(o)
+        base.poisk(data)
+    elif chtoto == 4:
+        print('What information do not you owe? ', '1 - No phone', '2 - No mail', '3 - No phone/ no mail', sep='\n')
+        a = int(input())
+        base.no_ph_ma(a)
+    elif chtoto == 5:
+        print('Enter contact code, click Enter button, enter data for edition')
+        code = int(input())
+        q = input().split(',')
+        contact = Contact(q[0], q[1].replace(' ', ''), q[2].replace(' ', '').replace('\n', ''))
+        base.edit(code, contact)
+
+    print()
+    vyvod()
+    chtoto = int(input())
+
+#Поиск без телефона и почты, к сожалению, не работает...
